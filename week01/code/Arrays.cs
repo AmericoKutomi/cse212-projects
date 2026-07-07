@@ -13,7 +13,24 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+        // Declare a List to receive the result
+        List<double> multiples = new List<double>();
+
+        // Start with "number" which is the first element of multiples list
+        double multiple = number;
+        multiples.Add(multiple);
+
+        // a loop to obtain the list of multiples of a number
+        //  starting with the second element
+        for (var element = 2; element <= length; ++element)
+        {
+            // calculate the multiple
+            multiple = number * element;
+            // add multiple to multiples list
+            multiples.Add(multiple);
+        }
+
+        return multiples.ToArray(); // replace this return statement with your own
     }
 
     /// <summary>
@@ -29,5 +46,25 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        // To rotate the list right, split the list in two parts
+        //   - the first part is the last amount of elements
+        //   - the second part is the first elements until the amount to be rotaded
+        // The result will be the first part concatenated to the second part
+
+        // declare the two parts
+        List<int> part1 = new List<int>();
+        List<int> part2 = new List<int>();
+
+        // the first part is the last amount of elements
+        part1 = data.GetRange(data.Count - amount, amount);
+
+        // the second part is the first elements until the amount to be rotaded
+        part2 = data.GetRange(0, data.Count - amount);
+
+        // The result will be the first part concatenated to the second part
+        data.Clear();
+        data.AddRange(part1);
+        data.AddRange(part2);
     }
 }
