@@ -36,12 +36,18 @@ public class PriorityQueueTests
     // Defect(s) Found: The empty queue is not considered
     public void TestPriorityQueue_2()
     {
+        // arrange
         var priorityQueue = new PriorityQueue();
-        Assert.ThrowsException<InvalidOperationException>(() =>
+
+        // act
+        //  do nothing
+
+        // assert
+        InvalidOperationException ex = Assert.ThrowsException<InvalidOperationException>(() =>
         {
             priorityQueue.Dequeue();
-        }
-        );
+        });
+        Assert.AreEqual("The queue is empty.", ex.Message);
     }
 
     // Add more test cases as needed below.
