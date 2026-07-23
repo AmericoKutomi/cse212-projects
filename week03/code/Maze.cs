@@ -33,6 +33,15 @@ public class Maze
     public void MoveLeft()
     {
         // FILL IN CODE
+        if (_currX == 1)
+            throw new InvalidOperationException("Can't go that way!");
+
+        bool[] validDirections = _mazeMap[(_currX, _currY)];
+        // 0 means left
+        if (validDirections[0])
+            _currX -= 1;
+        else
+            throw new InvalidOperationException("Can't go that way!");
     }
 
     /// <summary>
@@ -42,6 +51,12 @@ public class Maze
     public void MoveRight()
     {
         // FILL IN CODE
+        bool[] validDirections = _mazeMap[(_currX, _currY)];
+        // 1 means right
+        if (validDirections[1])
+            _currX += 1;
+        else
+            throw new InvalidOperationException("Can't go that way!");
     }
 
     /// <summary>
@@ -51,6 +66,12 @@ public class Maze
     public void MoveUp()
     {
         // FILL IN CODE
+        bool[] validDirections = _mazeMap[(_currX, _currY)];
+        // 2 means up
+        if (validDirections[2])
+            _currY -= 1;
+        else
+            throw new InvalidOperationException("Can't go that way!");
     }
 
     /// <summary>
@@ -60,6 +81,12 @@ public class Maze
     public void MoveDown()
     {
         // FILL IN CODE
+        bool[] validDirections = _mazeMap[(_currX, _currY)];
+        // 3 means down
+        if (validDirections[3])
+            _currY += 1;
+        else
+            throw new InvalidOperationException("Can't go that way!");
     }
 
     public string GetStatus()

@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Microsoft.VisualBasic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 public static class SetsAndMaps
 {
@@ -22,7 +24,33 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // Create a HashSet from words
+        var wordsHashSet = new HashSet<string>(words);
+
+        // Declare a HashSet that will receive elements seen in words
+        var seen = new HashSet<string>();
+
+        // Declare the resulting string array[]
+        var pairs = new List<string>();
+
+        string complement;
+        // Iterate through each element in words
+        foreach (var element in wordsHashSet)
+        {
+            // Get the correspondig pair
+            complement = new string(new[] { element[1], element[0] });
+
+            // If the complement is in the seen HashSet, add the pair
+            if (seen.Contains(complement))
+            {
+                pairs.Add($"{element} & {complement}");
+            }
+
+            // Add the current element to the seen HashSet
+            seen.Add(element);
+        }
+
+        return pairs.ToArray();
     }
 
     /// <summary>
@@ -43,6 +71,15 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            // get the degree name
+            var degreeName = fields[3];
+            // check if degree Name already exists in degrees dictionary          
+            if (degrees.ContainsKey(degreeName))
+                // if exists, add 1
+                degrees[degreeName] += 1;
+            else
+                // if does not exist, start with 1
+                degrees[degreeName] = 1;
         }
 
         return degrees;
@@ -67,7 +104,47 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+
+        char letter;
+        // create one dictionary for each word
+        var dictionary1 = new Dictionary<char, int>();
+        for (int i = 0; i < word1.Length; i++)
+        {
+            if (word1[i] != ' ')
+            {
+                // it is not case sensitive
+                letter = char.ToLower(word1[i]);
+                // TryGetValue is used to save one search to the dictionary
+                if (dictionary1.TryGetValue(letter, out int quantity1))
+                    // if exists, add 1
+                    dictionary1[letter] = quantity1 + 1;
+                else
+                    // if does not exist, start with 1
+                    dictionary1[letter] = 1;
+            }
+        }
+
+        // loop to discount the quantities for each letter
+        for (int i = 0; i < word2.Length; i++)
+        {
+            if (word2[i] != ' ')
+            {
+                // it is not case sensitive
+                letter = char.ToLower(word2[i]);
+                // if the letter is not present in the first word (Dictionary1), then is not aanagram
+                if (!dictionary1.TryGetValue(letter, out int quantity1))
+                    return false;
+                // if there is only one of that letter, remove it from the dictionary
+                if (quantity1 == 1)
+                    dictionary1.Remove(letter);
+                else
+                    // decreases the quantity by 1
+                    dictionary1[letter] = quantity1 - 1;
+            }
+        }
+
+        // At the end, if the dictionary1 is empty, than the two words are anagrams.
+        return dictionary1.Count == 0;
     }
 
     /// <summary>
@@ -86,12 +163,18 @@ public static class SetsAndMaps
     /// </summary>
     public static string[] EarthquakeDailySummary()
     {
+
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         using var client = new HttpClient();
         using var getRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
         using var jsonStream = client.Send(getRequestMessage).Content.ReadAsStream();
         using var reader = new StreamReader(jsonStream);
         var json = reader.ReadToEnd();
+
+        /*
+        // alternative do http request
+        var json = File.ReadAllText("sample.geojson");
+        */
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
@@ -101,6 +184,13 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        var features = new List<string>();
+
+        foreach (var feature in featureCollection.features)
+        {
+            features.Add($"{feature.properties.place} - Mag {feature.properties.mag}");
+        }
+
+        return features.ToArray();
     }
 }
